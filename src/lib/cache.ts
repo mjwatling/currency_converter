@@ -49,10 +49,10 @@ export function setCached(base: string, rates: Record<string, number>, source: s
       entry = JSON.parse(raw);
     } catch {
       // If corrupt, start fresh
-      entry = { base, timestamp: 0, source: "" };
+      entry = { base, rates: {}, timestamp: 0, source: "" };
     }
   } else {
-    entry = { base, timestamp: 0, source: "" };
+    entry = { base, rates: {}, timestamp: 0, source: "" };
   }
 
   const now = Date.now();
