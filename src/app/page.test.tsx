@@ -2,49 +2,45 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Home from './page';
 
-vi.mock('next/image', () => ({
-  default: (props: React.ImgHTMLAttributes<HTMLImageElement> & { priority?: boolean }) => {
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-    return <img {...props} />;
-  },
+vi.mock('@/components/ConverterShell', () => ({
+  default: () => <div data-testid="converter-shell" />,
+}));
+
+vi.mock('@/components/AdBanner', () => ({
+  default: () => <div data-testid="ad-banner" />,
 }));
 
 describe('Home', () => {
-  it('renders the Next.js logo', () => {
+  it('renders the CurrencyXchange brand', () => {
     render(<Home />);
-    expect(screen.getByAltText('Next.js logo')).toBeInTheDocument();
+    expect(screen.getByText('Currency')).toBeInTheDocument();
+    expect(screen.getByText('Xchange')).toBeInTheDocument();
   });
 
-  it('renders the getting-started heading', () => {
+  it('renders the main heading', () => {
     render(<Home />);
     expect(
-      screen.getByRole('heading', { name: /to get started, edit the page\.tsx file/i })
+      screen.getByRole('heading', { name: /currency converter/i, level: 1 })
     ).toBeInTheDocument();
   });
 
-  it('renders the Templates link with correct href', () => {
+  it('renders the converter shell', () => {
     render(<Home />);
-    const link = screen.getByRole('link', { name: /templates/i });
-    expect(link).toHaveAttribute('href', expect.stringContaining('vercel.com/templates'));
+    expect(screen.getByTestId('converter-shell')).toBeInTheDocument();
   });
 
-  it('renders the Learning link with correct href', () => {
+  it('renders the features section', () => {
     render(<Home />);
-    const link = screen.getByRole('link', { name: /learning/i });
-    expect(link).toHaveAttribute('href', expect.stringContaining('nextjs.org/learn'));
+    expect(
+      screen.getByRole('heading', { name: /why currencyxchange/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Real-Time Rates')).toBeInTheDocument();
+    expect(screen.getByText('160+ Currencies')).toBeInTheDocument();
+    expect(screen.getByText('Fast & Free')).toBeInTheDocument();
   });
 
-  it('renders the Deploy Now link opening in a new tab', () => {
+  it('renders ad banners', () => {
     render(<Home />);
-    const link = screen.getByRole('link', { name: /deploy now/i });
-    expect(link).toHaveAttribute('target', '_blank');
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-  });
-
-  it('renders the Documentation link opening in a new tab', () => {
-    render(<Home />);
-    const link = screen.getByRole('link', { name: /documentation/i });
-    expect(link).toHaveAttribute('target', '_blank');
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(screen.getAllByTestId('ad-banner')).toHaveLength(3);
   });
 });

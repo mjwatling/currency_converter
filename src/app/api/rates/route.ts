@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { rateLimit } from "../rateLimit";
 import { getCached, setCached } from "@/lib/cache";
 
-export async function GET(request: Request) {
-  const nextReq = new Request(request.url, { method: request.method, headers: request.headers });
-  const breach = rateLimit(nextReq);
+export async function GET(request: NextRequest) {
+  const breach = rateLimit(request);
   if (breach) return breach;
 
   const { searchParams } = new URL(request.url);

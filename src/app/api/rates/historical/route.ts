@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
-const histCache: Record<string, { data: any[]; timestamp: number }> = {};
+const histCache: Record<string, { data: { date: string; rate: number }[]; timestamp: number }> = {};
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

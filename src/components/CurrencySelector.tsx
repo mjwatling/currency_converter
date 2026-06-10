@@ -44,12 +44,11 @@ export default function CurrencySelector({
       c.name.length > 0 && c.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  useEffect(() => {
-    if (isOpen) {
-      setSearch("");
-      setFocusedIndex(-1);
-    }
-  }, [isOpen]);
+  const openDropdown = () => {
+    setSearch("");
+    setFocusedIndex(-1);
+    setIsOpen(true);
+  };
 
   useEffect(() => {
     if (focusedIndex >= 0 && listRef.current) {
@@ -91,7 +90,7 @@ export default function CurrencySelector({
       case "ArrowDown":
         e.preventDefault();
         if (!isOpen) {
-          setIsOpen(true);
+          openDropdown();
         } else {
           setFocusedIndex((i) => Math.min(i + 1, filtered.length - 1));
         }
@@ -105,7 +104,7 @@ export default function CurrencySelector({
       case "Enter":
         e.preventDefault();
         if (!isOpen) {
-          setIsOpen(true);
+          openDropdown();
         } else if (focusedIndex >= 0 && focusedIndex < filtered.length) {
           handleSelect(filtered[focusedIndex].code);
         }
@@ -131,12 +130,12 @@ export default function CurrencySelector({
       <div className="flex items-center gap-1">
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => (isOpen ? setIsOpen(false) : openDropdown())}
           onKeyDown={handleKeyDown}
           role="combobox"
           aria-haspopup="listbox"
-          aria-expanded={String(isOpen)}
-          aria_controls={listboxId}
+          aria-expanded={isOpen}
+          aria-controls={listboxId}
           className="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 cursor-pointer"
           style={{
             backgroundColor: "var(--input-bg)",
@@ -227,7 +226,7 @@ export default function CurrencySelector({
                 key={currency.code}
                 type="button"
                 role="option"
-                aria-selected={String(currency.code === value)}
+                aria-selected={currency.code === value}
                 data-index={index}
                 onClick={() => handleSelect(currency.code)}
                 onMouseEnter={() => setFocusedIndex(index)}

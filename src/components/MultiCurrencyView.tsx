@@ -17,10 +17,9 @@ export default function MultiCurrencyView() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     fetch(`/api/rates?base=${baseCurrency}`)
       .then((r) => r.json())
-      .then((d: any) => {
+      .then((d: { rates?: Record<string, number> }) => {
         if (!cancelled && d.rates) setRates(d.rates);
       })
       .catch(() => {})
@@ -30,18 +29,17 @@ export default function MultiCurrencyView() {
     return () => { cancelled = true; };
   }, [baseCurrency]);
 
+  const handleBaseChange = (code: string) => {
+    setLoading(true);
+    setBaseCurrency(code);
+  };
+
   const addSlot = () => {
     if (targets.length < 4) setTargets([...targets, "EUR"]);
   };
 
   const removeSlot = (idx: number) => {
     if (targets.length > 1) setTargets(targets.filter((_, i) => i !== idx));
-  };
-
-  const updateTarget = (idx: number, code: string) => {
-    const newTargets = [...targets];
-    newTargets[idx] = code;
-    setTargets(newTargets);
   };
 
   const numericAmount = parseFloat(amount) || 0;
@@ -81,7 +79,7 @@ export default function MultiCurrencyView() {
         <div className="w-28">
           <CurrencySelector
             value={baseCurrency}
-            onChange={setBaseCurrency}
+            onChange={handleBaseChange}
             label=""
             currencies={staticCurrencies}
           />
