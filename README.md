@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Currency Converter
 
-## Getting Started
+Real-time currency conversion app with a Next.js 16 web frontend and a native macOS SwiftUI desktop companion. Both share the same data source: ExchangeRate-API (v6) with a free-tier fallback to `open.er-api.com`.
 
-First, run the development server:
+## Project layout
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+currency_converter/
+├── .env.local.example              # Environment variable template
+├── .gitignore                      # Git ignore rules (Node + Swift)
+├── CLAUDE.md                       # AI-assisted development guide
+├── README.md                       # This file
+│
+├── CurrencyConverterApp/           # macOS desktop app (SwiftUI)
+│   ├── CurrencyConverterApp/       # App entry point, views, assets
+│   └── Models/                     # Data models & API client
+│
+├── public/                         # Static assets served by Next.js
+│
+└── src/                            # Next.js web app source
+    ├── app/                        # App Router: pages, layout, CSS, API routes
+    │   ├── api/rates/              # Current rates endpoint (with file cache + rate limit)
+    │   └── api/rates/historical/   # Historical rates endpoint (for charts)
+    ├── components/                 # React UI components (client-side)
+    └── lib/                        # Shared data & utility modules
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick start — web app
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+cp .env.local.example .env.local     # optional: add API key
+npm run dev                          # → http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Other commands:
 
-## Learn More
+| Command | Description |
+|---------|-------------|
+| `npm run build` | Production build (.next/) |
+| `npm start` | Serve production build |
+| `npm run lint` | Run ESLint |
 
-To learn more about Next.js, take a look at the following resources:
+## Quick start — macOS app
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+open CurrencyConverterApp.xcodeproj   # open in Xcode, then Cmd+R
+# or
+cd CurrencyConverterApp && swift build -c release
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment variables
 
-## Deploy on Vercel
+Copy `.env.local.example` to `.env.local`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `EXCHANGE_RATE_API_KEY` | No | ExchangeRate-API v6 key (free tier works without it) |
+| `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | No | Google AdSense client ID (`ca-pub-XXXXXXXXXXXXXXXX`) |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Features
+
+- Real-time conversion between 30+ currencies with live rate display
+- Historical rate charts (7 / 30 / 90-day range) via Recharts
+- Favorite currencies persisted in localStorage with quick-select bar
+- Multi-currency comparison view (1 base → up to 4 targets)
+- Rate limiting, file-based cache fallback on API failure
+- Light/dark theme following system preference
+- Google AdSense integration (placeholder when no client ID configured)
+
+## Tech stack
+
+- **Web:** Next.js 16, React 19, TypeScript, Tailwind CSS v4, Recharts
+- **Desktop:** Swift 5, SwiftUI, Combine, URLSession
+- **API:** ExchangeRate-API (v6), free fallback to open.er-api.com
+- **Cache:** In-memory (1h TTL) + persistent JSON file cache in `.cache/rates/`
+
+## Directory READMEs
+
+Each subdirectory has its own `README.md` with details on files, exports, and usage:
+
+- [`src/`](src/README.md) — Web app source overview
+- [`src/app/`](src/app/README.md) — Pages, layout, global styles
+- [`src/app/api/`](src/app/api/README.md) — API route index
+- [`src/app/api/rates/`](src/app/api/rates/README.md) — Current rates endpoint
+- [`src/components/`](src/components/README.md) — React UI components
+- [`src/lib/`](src/lib/README.md) — Shared utilities (currencies, cache)
+- [`CurrencyConverterApp/`](CurrencyConverterApp/README.md) — macOS desktop app

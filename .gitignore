@@ -39,3 +39,33 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# persistent cache
+/.cache/
+
+# =====================
+# Swift / Xcode
+# =====================
+
+# Swift Package Manager
+CurrencyConverterApp/.build/
+
+# Xcode derived data
+DerivedData/
+.build/
+
+# Xcode user data
+*.xcuserdata
+*.xcuserdatad
+*xcodeproj/xcuserdata
+*.xcworkspace/xcuserdata
+
+# Build products
+*.app
+*.framework
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Playgrounds
+playground.xcworkspace
